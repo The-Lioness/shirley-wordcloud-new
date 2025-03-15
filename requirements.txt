@@ -1,0 +1,7 @@
+streamlit
+matplotlib
+wordcloud
+pandas
+google-auth
+google-auth-oauthlib
+gspread
