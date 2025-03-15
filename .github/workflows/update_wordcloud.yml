@@ -18,7 +18,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install gspread pandas wordcloud matplotlib google-auth google-auth-oauthlib google-auth-httplib2
+        run: pip install -r requirements.txt
 
       - name: Run Word Cloud Script
         run: python wordcloud_generator.py
