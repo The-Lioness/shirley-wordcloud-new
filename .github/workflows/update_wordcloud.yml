@@ -2,7 +2,7 @@ name: Update Word Cloud
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
+    - cron: '0 0 1 * *'  # Runs at 12:00 AM on the 1st of every month
   workflow_dispatch:  # Allows manual execution
 
 jobs:
@@ -16,6 +16,12 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+
+      - name: Create service account file
+        run: echo "$SERVICE_ACCOUNT_JSON" > service_account.json
+        shell: bash
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
 
       - name: Install dependencies
         run: pip install -r requirements.txt
