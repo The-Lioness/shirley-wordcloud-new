@@ -2,7 +2,7 @@ name: Update Word Cloud
 
 on:
   schedule:
-    - cron: '0 0 1 * *'  # Runs monthly on the 1st at midnight
+    - cron: '0 1 * * *'  # Runs daily at 1 AM (adjust as needed)
   workflow_dispatch:  # Allows manual execution
 
 jobs:
@@ -27,15 +27,15 @@ jobs:
         run: echo "$SERVICE_ACCOUNT_JSON" > service_account.json
 
       - name: Run Word Cloud Script
-        run: python wordcloud_generator.py
+        run: python wordcloud_generator.py --save-only
 
-      - name: Force update of word cloud image
+      - name: Commit and Push Updated Image
         env:
           GH_ACTIONS_TOKEN: ${{ secrets.GH_ACTIONS_TOKEN }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${GH_ACTIONS_TOKEN}@github.com/The-Lioness/shirley-wordcloud-new.git
-          git add .
-          git commit -m "Auto-update word cloud" || echo "No changes to commit"
+          git add wordcloud.png
+          git commit -m "Auto-update word cloud image" || echo "No changes to commit"
           git push origin main
