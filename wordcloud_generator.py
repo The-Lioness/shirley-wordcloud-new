@@ -4,6 +4,23 @@ from google.oauth2.service_account import Credentials
 import random
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import sys
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+
+# Load words and generate word cloud
+wordcloud = WordCloud(width=800, height=400, background_color="white").generate("Your words here")
+
+# Save the generated word cloud as an image
+wordcloud.to_file("wordcloud.png")
+plt.savefig("wordcloud.png")  # Ensures it's written as an image
+
+# If running locally (not in GitHub Actions), show in Streamlit
+if "--save-only" not in sys.argv:
+    import streamlit as st
+    st.title("Grandma Shirley Tribute Word Cloud")
+    st.image("wordcloud.png")
+
 
 # Set up Google Sheets API authentication
 SCOPE = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
