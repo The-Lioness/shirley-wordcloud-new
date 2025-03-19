@@ -5,30 +5,30 @@ import random
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-# Google Sheets API authentication
+# Google Sheets API Authentication
 SCOPE = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-SERVICE_ACCOUNT_FILE = "service_account.json"  # Ensure this file matches your repo secrets
+SERVICE_ACCOUNT_FILE = "service_account.json"
 
-SPREADSHEET_ID = "1hkXdc_ebQm06aR0vHp_cGQHgF_55DwW8KYOxbIuBgQ"
+creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPE)
+client = gspread.authorize(creds)
+
+# Google Sheet Information (Replace with Correct ID & Sheet Name)
+SPREADSHEET_ID = "1khXdc_ebQmO6aRoVhp_cGQgHf_55DwW8KYOwblu8gQ"  # Replace with your actual Sheet ID
 SHEET_NAME = "Shirley McDonald Ross Memorial Responses"
 
-# Authenticate and open Google Sheet
-credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPE)
-client = gspread.authorize(credentials)
+# Read column E (Words describing Shirley)
 sheet = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
-
-# Read words (Column E contains words describing Shirley)
-words_list = sheet.col_values(5)[1:]  # Skip header row
+words_list = sheet.col_values(5)[1:]  # Skip header
 
 # Convert list to a single string
 words_text = " ".join(words_list)
 
-# Define a custom color function for the word cloud (Royal Blue Theme)
+# Define word cloud color function
 def blue_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
-    colors = ["#4169E1", "#1E90FF", "#4682B4", "#5F9EA0", "#87CEFA"]  # Shades of Royal Blue
+    colors = ["#4169E1", "#1E90FF", "#4682B4", "#5F9EA0", "#87CEFA"]  # Royal Blue + Complementary Blues
     return random.choice(colors)
 
-# Generate the Word Cloud
+# Generate Word Cloud
 wordcloud = WordCloud(
     width=800,
     height=400,
@@ -36,10 +36,10 @@ wordcloud = WordCloud(
     color_func=blue_color_func
 ).generate(words_text)
 
-# Save the generated word cloud as an image
-wordcloud.to_file("wordcloud.png")  # Ensures it's written as an image
+# Save word cloud to file
+wordcloud.to_file("wordcloud.png")
 
-# Streamlit UI - Display only if running locally (not in GitHub Actions)
+# Streamlit UI (if not running in GitHub Actions)
 import sys
 if "--save-only" not in sys.argv:
     st.title("Grandma Shirley Tribute Word Cloud")
