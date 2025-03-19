@@ -13,7 +13,7 @@ creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPE
 client = gspread.authorize(creds)
 
 # Google Sheet Information (Replace with Correct ID & Sheet Name)
-SPREADSHEET_ID = "1khXdc_ebQmO6aRoVhp_cGQgHf_55DwW8KYOwblu8gQ"  # Replace with your actual Sheet ID
+SPREADSHEET_ID = "1khXdc__ebQmO6aRoVhp_cGQgHf_55DwW8KYOwbIu8gQ"  # Replace with your actual Sheet ID
 SHEET_NAME = "Shirley McDonald Ross Memorial Responses"
 
 # Read column E (Words describing Shirley)
