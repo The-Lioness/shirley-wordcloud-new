@@ -23,9 +23,7 @@ service_account_info = {
 
 
 # Load credentials from Streamlit Secrets
-service_account_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
-creds = Credentials.from_service_account_info(service_account_info)
-
+creds = Credentials.from_service_account_info(st.secrets["SERVICE_ACCOUNT_JSON"])
 # Authenticate with Google Sheets
 client = gspread.authorize(creds)
 
