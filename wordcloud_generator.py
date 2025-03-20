@@ -6,6 +6,22 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from google.oauth2.service_account import Credentials
 
+# Load credentials correctly
+service_account_info = {
+    "type": st.secrets["SERVICE_ACCOUNT_JSON"]["type"],
+    "project_id": st.secrets["SERVICE_ACCOUNT_JSON"]["project_id"],
+    "private_key_id": st.secrets["SERVICE_ACCOUNT_JSON"]["private_key_id"],
+    "private_key": st.secrets["SERVICE_ACCOUNT_JSON"]["private_key"].replace("\\n", "\n"),
+    "client_email": st.secrets["SERVICE_ACCOUNT_JSON"]["client_email"],
+    "client_id": st.secrets["SERVICE_ACCOUNT_JSON"]["client_id"],
+    "auth_uri": st.secrets["SERVICE_ACCOUNT_JSON"]["auth_uri"],
+    "token_uri": st.secrets["SERVICE_ACCOUNT_JSON"]["token_uri"],
+    "auth_provider_x509_cert_url": st.secrets["SERVICE_ACCOUNT_JSON"]["auth_provider_x509_cert_url"],
+    "client_x509_cert_url": st.secrets["SERVICE_ACCOUNT_JSON"]["client_x509_cert_url"],
+    "universe_domain": st.secrets["SERVICE_ACCOUNT_JSON"]["universe_domain"]
+}
+
+
 # Load credentials from Streamlit Secrets
 service_account_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
 creds = Credentials.from_service_account_info(service_account_info)
