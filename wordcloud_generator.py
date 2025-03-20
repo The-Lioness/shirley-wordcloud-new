@@ -1,67 +1,37 @@
-import streamlit as st
-import gspread
-import random
-import json
-import matplotlib.pyplot as plt
+import pandas as pd
 from wordcloud import WordCloud
-from google.oauth2.service_account import Credentials
+import matplotlib.pyplot as plt
 
-# Load credentials correctly
-service_account_info = {
-    "type": st.secrets["SERVICE_ACCOUNT_JSON"]["type"],
-    "project_id": st.secrets["SERVICE_ACCOUNT_JSON"]["project_id"],
-    "private_key_id": st.secrets["SERVICE_ACCOUNT_JSON"]["private_key_id"],
-    "private_key": st.secrets["SERVICE_ACCOUNT_JSON"]["private_key"].replace("\\n", "\n"),
-    "client_email": st.secrets["SERVICE_ACCOUNT_JSON"]["client_email"],
-    "client_id": st.secrets["SERVICE_ACCOUNT_JSON"]["client_id"],
-    "auth_uri": st.secrets["SERVICE_ACCOUNT_JSON"]["auth_uri"],
-    "token_uri": st.secrets["SERVICE_ACCOUNT_JSON"]["token_uri"],
-    "auth_provider_x509_cert_url": st.secrets["SERVICE_ACCOUNT_JSON"]["auth_provider_x509_cert_url"],
-    "client_x509_cert_url": st.secrets["SERVICE_ACCOUNT_JSON"]["client_x509_cert_url"],
-    "universe_domain": st.secrets["SERVICE_ACCOUNT_JSON"]["universe_domain"]
-}
+# Load the CSV file (Make sure it's in the same folder)
+csv_file = "shirley_memorial_responses.csv"
 
+# Read the CSV and extract the relevant column (Adjust the column name if necessary)
+df = pd.read_csv(csv_file)
 
-# Load credentials from Streamlit Secrets
-creds = Credentials.from_service_account_info(st.secrets["SERVICE_ACCOUNT_JSON"])
-# Authenticate with Google Sheets
-client = gspread.authorize(creds)
-
-# Google Sheets API Authentication
-SCOPE = [
-    "https://www.googleapis.com/auth/spreadsheets.readonly",
-    "https://www.googleapis.com/auth/drive.readonly"
-]
-
-# Google Sheet Information (Replace with Correct ID & Sheet Name)
-SPREADSHEET_ID = "1khXdc__ebQmO6aRoVhp_cGQgHf_55DwW8KYOwbIu8gQ"  # Replace with your actual Sheet ID
-SHEET_NAME = "Shirley Memorial Responses"
-
-# Read column E (Words describing Shirley)
-sheet = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
-words_list = sheet.col_values(5)[1:]  # Skip header
+# Select the column that contains words for the word cloud
+words_column = "What is on word that comes to mind when you think of Shirley?"
+words_list = df[words_column].dropna().tolist()  # Remove empty cells
 
 # Convert list to a single string
 words_text = " ".join(words_list)
 
-# Define word cloud color function
-def blue_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
-    colors = ["#4169E1", "#1E90FF", "#4682B4", "#5F9EA0", "#87CEFA"]  # Royal Blue + Complementary Blues
-    return random.choice(colors)
+# Define function for a royal blue color scheme
+def royal_blue_color(word, font_size, position, orientation, random_state=None, **kwargs):
+    return "royalblue"  # Sets all words to royal blue
 
-# Generate Word Cloud
+# Generate the word cloud with royal blue font
 wordcloud = WordCloud(
-    width=800,
-    height=400,
-    background_color="white",
-    color_func=blue_color_func
+    width=800, 
+    height=400, 
+    background_color="white", 
+    color_func=royal_blue_color
 ).generate(words_text)
 
 # Save word cloud to file
 wordcloud.to_file("wordcloud.png")
 
-# Streamlit UI (if not running in GitHub Actions)
-import sys
-if "--save-only" not in sys.argv:
-    st.title("Grandma Shirley Tribute Word Cloud")
-    st.image("wordcloud.png")
+# Display the word cloud
+plt.figure(figsize=(10, 5))
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
