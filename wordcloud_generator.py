@@ -28,7 +28,10 @@ creds = Credentials.from_service_account_info(st.secrets["SERVICE_ACCOUNT_JSON"]
 client = gspread.authorize(creds)
 
 # Google Sheets API Authentication
-SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
+SCOPE = [
+    "https://www.googleapis.com/auth/spreadsheets.readonly",
+    "https://www.googleapis.com/auth/drive.readonly"
+]
 
 # Google Sheet Information (Replace with Correct ID & Sheet Name)
 SPREADSHEET_ID = "1khXdc__ebQmO6aRoVhp_cGQgHf_55DwW8KYOwbIu8gQ"  # Replace with your actual Sheet ID
