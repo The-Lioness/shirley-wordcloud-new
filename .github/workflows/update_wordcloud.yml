@@ -20,6 +20,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Ensure CSV File Exists
+        run: |
+          if [ ! -f "shirley_memorial_responses.csv" ]; then
+            echo "CSV file is missing! Exiting..."
+            exit 1
+          fi
+
       - name: Run Word Cloud Script
         run: python wordcloud_generator.py
 
