@@ -1,53 +1,43 @@
-import streamlit as st
-import gspread
-from google.oauth2.service_account import Credentials
-import random
+import pandas as pd
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-# Set up Google Sheets API authentication
-SCOPE = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-SERVICE_ACCOUNT_FILE = "service_account.json"  # Ensure this matches your file
+# Load the CSV
+csv_file = "shirley_memorial_responses.csv"
+df = pd.read_csv(csv_file)
 
-# Authenticate and connect to Google Sheets
-creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPE)
-client = gspread.authorize(creds)
+# Exact column name from your file
+words_column = "What is on word that comes to mind when you think of Shirley?"
+words_list = df[words_column].dropna().tolist()
 
-# Open the spreadsheet and select the correct sheet
-SPREADSHEET_ID = "1khXdc__ebQmO6aRoVhp_cGQgHf_55DwW8KYOwbIu8gQ"  # Replace with your actual Google Sheet ID
-SHEET_NAME = "Shirley Memorial Responses"  # Change if your sheet has a different name
-sheet = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
-
-# Read column E (Words to describe Shirley)
-words_list = sheet.col_values(5)[1:]  # Skip header
-
-# Convert list to a single string
+# Combine into single text string
 words_text = " ".join(words_list)
 
-# Define a custom color function for the word cloud
-def blue_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
-    colors = ["#4169E1", "#1E90FF", "#4682B4", "#5F9EA0", "#87CEFA"]  # Royal Blue + Complimentary Blues
-    return random.choice(colors)
+# Optional: color scheme with Royal Blue, Light Blue, Gray, and Gold
+import random
+def custom_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
+    colors = [
+        (225, 100, 50),  # Royal Blue
+        (225, 50, 65),   # Light Royal Blue
+        (0, 0, 50),      # Gray
+        (45, 90, 55)     # Gold accent
+    ]
+    hue, sat, light = random.choice(colors)
+    return f"hsl({hue}, {sat}%, {light}%)"
 
-# Generate Word Cloud
+# Generate word cloud
 wordcloud = WordCloud(
-    width=800,
-    height=400,
+    width=1000,
+    height=500,
     background_color="white",
-    color_func=blue_color_func
+    color_func=custom_color_func
 ).generate(words_text)
 
-# Streamlit UI
-st.title("Grandma Shirley Tribute Word Cloud")
+# Save to file
+wordcloud.to_file("wordcloud.png")
 
-# Display the word cloud
-fig, ax = plt.subplots(figsize=(10, 5))
-ax.imshow(wordcloud, interpolation="bilinear")
-ax.axis("off")
-st.pyplot(fig)
-
-# Refresh Button (Optional)
-if st.button("Refresh Word Cloud"):
-    st.rerun()
-plt.show()  # Save and display word cloud
-
+# Display
+plt.figure(figsize=(10, 5))
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
