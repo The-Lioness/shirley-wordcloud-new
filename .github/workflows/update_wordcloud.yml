@@ -1,9 +1,9 @@
 name: Update Word Cloud
 
-on:
-  schedule:
-    - cron: '0 1 * * *'  # Runs monthly on the 1st at midnight
-  workflow_dispatch:  # Allows manual execution
+#on:
+ # schedule:
+   # - cron: '0 1 * * *'  # Runs monthly on the 1st at midnight
+  #workflow_dispatch:  # Allows manual execution
 
 jobs:
   run_script:
